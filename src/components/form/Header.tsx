@@ -32,31 +32,31 @@ export const Header: React.FC<HeaderProps> = ({
     <div className="w-full mb-8">
       {/* Developer Branding & Trust Header */}
       <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-6">
-        {/* Logo Mateus */}
-        <div className="mb-5 hover:scale-105 transition-transform duration-300">
+        {/* Logo Mateus (Tamanho Aumentado) */}
+        <div className="mb-6 hover:scale-105 transition-transform duration-300 flex items-center justify-center">
           <img
             src="/logo-branca-mateus.png"
             alt="Mateus Bonette"
-            className="h-10 sm:h-12 w-auto object-contain drop-shadow-md"
+            className="h-16 sm:h-24 md:h-28 w-auto max-w-[280px] sm:max-w-sm object-contain drop-shadow-xl"
           />
         </div>
 
         {/* Profile Badge & Trust Greeting */}
-        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-900/90 border-2 border-slate-700/80 shadow-xl mb-4">
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-2xl bg-slate-900/95 border-2 border-slate-700 shadow-2xl mb-5">
           <div className="relative">
             <img
               src="/profile-2.jpg"
               alt="Mateus Bonette"
-              className="w-11 h-11 rounded-full object-cover border-2 border-teal-400 shadow-md ring-2 ring-teal-500/20"
+              className="w-12 h-12 rounded-full object-cover border-2 border-teal-400 shadow-md ring-2 ring-teal-500/25"
             />
-            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-950" title="Online" />
+            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-950 shadow" title="Online" />
           </div>
           <div className="text-left">
             <div className="flex items-center gap-1.5">
               <h3 className="text-sm font-bold text-white leading-tight">Mateus Bonette</h3>
               <Check className="w-3.5 h-3.5 text-teal-400 stroke-[3]" />
             </div>
-            <p className="text-xs text-slate-300 font-medium">Desenvolvedor & Criador do seu Projeto</p>
+            <p className="text-xs text-slate-300 font-medium">Desenvolvedor do seu Projeto</p>
           </div>
         </div>
 
@@ -74,19 +74,19 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Security & Confidentiality Trust Highlights */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full mt-5">
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-teal-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-teal-200">
+          <div className="p-3 rounded-xl bg-slate-900/90 border border-teal-500/40 flex items-center justify-center gap-2 text-xs font-semibold text-teal-200 shadow-sm">
             <Lock className="w-4 h-4 text-teal-400 shrink-0" />
             <span>Ambiente 100% Seguro</span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-emerald-200">
+          <div className="p-3 rounded-xl bg-slate-900/90 border border-emerald-500/40 flex items-center justify-center gap-2 text-xs font-semibold text-emerald-200 shadow-sm">
             <UserCheck className="w-4 h-4 text-emerald-400 shrink-0" />
             <span>Acesso Exclusivo de Mateus</span>
           </div>
 
-          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-cyan-200">
+          <div className="p-3 rounded-xl bg-slate-900/90 border border-cyan-500/40 flex items-center justify-center gap-2 text-xs font-semibold text-cyan-200 shadow-sm">
             <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>Fotos sem Perda de Qualidade</span>
+            <span>Fotos em Qualidade Máxima</span>
           </div>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, ExternalLink, ShieldCheck, Sparkles } from 'lucide-react';
+import { LogOut, ExternalLink, ShieldCheck } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 interface AdminHeaderProps {

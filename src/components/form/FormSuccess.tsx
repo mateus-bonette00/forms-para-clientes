@@ -1,5 +1,5 @@
 import React from 'react';
-import { CheckCircle2, Sparkles, ArrowLeft, HeartHandshake, ShieldCheck, Check } from 'lucide-react';
+import { Sparkles, ArrowLeft, HeartHandshake, Check } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 interface FormSuccessProps {

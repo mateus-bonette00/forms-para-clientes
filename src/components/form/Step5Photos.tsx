@@ -4,7 +4,6 @@ import {
   Upload,
   ShieldCheck,
   Trash2,
-  Tag,
   CheckCircle2,
   Layers,
   Sparkles,
