@@ -46,7 +46,7 @@ export const Textarea = React.forwardRef<HTMLTextAreaElement, TextareaProps>(({
         ref={ref}
         rows={rows}
         className={twMerge(
-          clsx(
+            clsx(
             'w-full bg-slate-900 border-2 border-slate-700/90 rounded-xl px-4 py-3 text-sm font-medium text-white placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-500/20 disabled:opacity-50 disabled:bg-slate-950 resize-y leading-relaxed shadow-inner',
             error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
             className

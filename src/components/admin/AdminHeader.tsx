@@ -1,5 +1,5 @@
 import React from 'react';
-import { LogOut, ExternalLink, ShieldCheck } from 'lucide-react';
+import { LogOut, ExternalLink } from 'lucide-react';
 import { Button } from '../ui/Button';
 
 interface AdminHeaderProps {
@@ -9,7 +9,7 @@ interface AdminHeaderProps {
 export const AdminHeader: React.FC<AdminHeaderProps> = ({ onLogout }) => {
   return (
     <header className="border-b-2 border-slate-800 bg-slate-950/80 backdrop-blur-md sticky top-0 z-30 shadow-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between py-3">
         <div className="flex items-center gap-3.5">
           <img
             src="/profile-2.jpg"
@@ -23,7 +23,7 @@ export const AdminHeader: React.FC<AdminHeaderProps> = ({ onLogout }) => {
                 Mateus Bonette
               </span>
             </div>
-            <p className="text-xs text-slate-400 mt-0.5 font-medium">Central de Materiais & Fotos HD</p>
+            <p className="text-xs text-slate-400 mt-1 font-medium">Central de Materiais & Fotos HD</p>
           </div>
         </div>
 

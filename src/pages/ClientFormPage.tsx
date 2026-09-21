@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
+import { ChevronLeft, ChevronRight, Lock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock, ShieldCheck, Heart } from 'lucide-react';
 import { ChevronLeft, ChevronRight, Lock, ShieldCheck } from 'lucide-react';
 import { Header } from '../components/form/Header';
 import { Step1Contact } from '../components/form/Step1Contact';
@@ -108,6 +110,7 @@ export const ClientFormPage: React.FC = () => {
       const response = await api.post('/submissions', formData);
       if (response.data?.success) {
         setIsSubmitted(true);
+        toast.success('Formulário e materiais enviados com sucesso!');
         toast.success('Formulário e fotos enviados com sucesso para Mateus Bonette!');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
@@ -234,3 +237,4 @@ export const ClientFormPage: React.FC = () => {
     </div>
   );
 };
+

@@ -1,14 +1,11 @@
 import React, { useRef, useState } from 'react';
 import {
   Camera,
-  Upload,
   ShieldCheck,
   Trash2,
-  CheckCircle2,
+  ImagePlus,
   Layers,
-  Sparkles,
-  Info,
-  ImagePlus
+  Info
 } from 'lucide-react';
 import { ClientFormData, UploadedFileItem } from '../../types';
 import { uploadFile } from '../../services/upload';
@@ -31,7 +28,7 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatusText, setUploadStatusText] = useState('');
 
-  // Photos excluding the main logo (which was handled in Step 2)
+  // Photos excluding logos (handled in Step 2)
   const photos = data.files.filter((f) => f.fileCategory !== 'LOGO');
 
   const handleFilesSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,11 +59,9 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
       }
     }
 
-    const logoFile = data.files.find((f) => f.fileCategory === 'LOGO');
+    const logos = data.files.filter((f) => f.fileCategory === 'LOGO');
     const existingPhotos = data.files.filter((f) => f.fileCategory !== 'LOGO');
-    const updatedFiles = logoFile
-      ? [logoFile, ...existingPhotos, ...newItems]
-      : [...existingPhotos, ...newItems];
+    const updatedFiles = [...logos, ...existingPhotos, ...newItems];
 
     onChange('files', updatedFiles);
     setIsUploading(false);
@@ -75,26 +70,26 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
   };
 
   const handleUpdateCategory = (index: number, category: UploadedFileItem['fileCategory']) => {
-    const logoFile = data.files.find((f) => f.fileCategory === 'LOGO');
+    const logos = data.files.filter((f) => f.fileCategory === 'LOGO');
     const updatedPhotos = [...photos];
     updatedPhotos[index] = { ...updatedPhotos[index], fileCategory: category };
 
-    onChange('files', logoFile ? [logoFile, ...updatedPhotos] : updatedPhotos);
+    onChange('files', [...logos, ...updatedPhotos]);
   };
 
   const handleUpdateCaption = (index: number, caption: string) => {
-    const logoFile = data.files.find((f) => f.fileCategory === 'LOGO');
+    const logos = data.files.filter((f) => f.fileCategory === 'LOGO');
     const updatedPhotos = [...photos];
     updatedPhotos[index] = { ...updatedPhotos[index], caption };
 
-    onChange('files', logoFile ? [logoFile, ...updatedPhotos] : updatedPhotos);
+    onChange('files', [...logos, ...updatedPhotos]);
   };
 
   const handleRemovePhoto = (index: number) => {
-    const logoFile = data.files.find((f) => f.fileCategory === 'LOGO');
+    const logos = data.files.filter((f) => f.fileCategory === 'LOGO');
     const updatedPhotos = photos.filter((_, i) => i !== index);
 
-    onChange('files', logoFile ? [logoFile, ...updatedPhotos] : updatedPhotos);
+    onChange('files', [...logos, ...updatedPhotos]);
   };
 
   return (
@@ -131,7 +126,7 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
       {/* Upload Dropzone */}
       <div
         onClick={() => fileInputRef.current?.click()}
-        className={`border-3 border-dashed rounded-2xl p-8 sm:p-10 text-center cursor-pointer transition-all duration-300 ${
+        className={`border-2 border-dashed rounded-2xl p-8 sm:p-10 text-center cursor-pointer transition-all duration-300 ${
           isUploading
             ? 'border-teal-400 bg-teal-500/10'
             : 'border-slate-600 bg-slate-900/80 hover:border-teal-400 hover:bg-slate-900 shadow-xl'
@@ -197,7 +192,7 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
               >
                 <div className="flex items-center gap-3.5">
                   {/* Thumbnail */}
-                  <div className="w-18 h-18 rounded-xl bg-slate-950 border-2 border-slate-700 overflow-hidden shrink-0 flex items-center justify-center shadow-md">
+                  <div className="w-16 h-16 rounded-xl bg-slate-950 border-2 border-slate-700 overflow-hidden shrink-0 flex items-center justify-center shadow-md">
                     <img
                       src={item.fileUrl || item.previewUrl}
                       alt={item.fileName}

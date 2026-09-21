@@ -1,15 +1,9 @@
 import React from 'react';
 import {
-  Sparkles,
   CheckCircle2,
-  FileText,
-  Palette,
-  Briefcase,
-  Camera,
-  Link2,
-  ShieldCheck,
   Lock,
   UserCheck,
+  ShieldCheck,
   Check
 } from 'lucide-react';
 
@@ -112,7 +106,7 @@ export const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        {/* Step dots */}
+        {/* Step clickable items */}
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-800">
           {steps.map((step, idx) => {
             const isCompleted = idx < currentStep;
