@@ -29,7 +29,8 @@ export const AdminLoginPage: React.FC = () => {
       }
     } catch (err: any) {
       console.error('Erro no login:', err);
-      const msg = err.response?.data?.error || 'Credenciais inválidas. Verifique seu usuário e senha.';
+      const errData = err.response?.data?.error || err.response?.data?.message || err.message;
+      const msg = typeof errData === 'string' ? errData : (typeof errData === 'object' && errData?.message ? String(errData.message) : 'Credenciais inválidas. Verifique seu usuário e senha.');
       toast.error(msg);
     } finally {
       setIsLoading(false);

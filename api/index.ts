@@ -5,10 +5,7 @@ import jwt from 'jsonwebtoken';
 import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
-import { PrismaClient } from '@prisma/client';
-import { PrismaPg } from '@prisma/adapter-pg';
-import pg from 'pg';
-import { put, list, del } from '@vercel/blob';
+import { put, list } from '@vercel/blob';
 import { handleUpload } from '@vercel/blob/client';
 
 dotenv.config();
@@ -18,12 +15,12 @@ const DEFAULT_ADMIN_USER = process.env.ADMIN_USER || 'admin';
 const DEFAULT_ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'admin123';
 
 // -------------------------------------------------------------
-// 1. PRISMA CLIENT INITIALIZATION (SAFE, NO CRASHES)
+// 1. SAFE LAZY PRISMA INITIALIZATION
 // -------------------------------------------------------------
-let prismaInstance: PrismaClient | null = null;
+let prismaInstance: any = null;
 let prismaDisabled = false;
 
-function getPrisma(): PrismaClient | null {
+function getPrisma(): any {
   if (prismaDisabled) return null;
   if (prismaInstance) return prismaInstance;
 
@@ -33,6 +30,10 @@ function getPrisma(): PrismaClient | null {
   }
 
   try {
+    const { PrismaClient } = require('@prisma/client');
+    const { PrismaPg } = require('@prisma/adapter-pg');
+    const pg = require('pg');
+
     const isCloud =
       connectionString.includes('neon.tech') ||
       connectionString.includes('supabase.co') ||
@@ -47,7 +48,7 @@ function getPrisma(): PrismaClient | null {
     const adapter = new PrismaPg(pool);
     prismaInstance = new PrismaClient({
       adapter,
-      log: process.env.NODE_ENV === 'development' ? ['error', 'warn'] : ['error'],
+      log: ['error'],
     });
 
     return prismaInstance;
@@ -89,25 +90,27 @@ async function loadSubmissions(): Promise<any[]> {
   }
 
   // 2. Try reading from Vercel Blob store
-  try {
-    const blobList = await list({ prefix: 'submissions/all.json' });
-    if (blobList.blobs && blobList.blobs.length > 0) {
-      const blobUrl = blobList.blobs[0].url;
-      const resp = await fetch(blobUrl);
-      if (resp.ok) {
-        const data = await resp.json();
-        if (Array.isArray(data)) {
-          memorySubmissions = data;
-          hasLoadedMemory = true;
-          try {
-            fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(memorySubmissions, null, 2), 'utf-8');
-          } catch {}
-          return memorySubmissions;
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      const blobList = await list({ prefix: 'submissions/all.json' });
+      if (blobList.blobs && blobList.blobs.length > 0) {
+        const blobUrl = blobList.blobs[0].url;
+        const resp = await fetch(blobUrl);
+        if (resp.ok) {
+          const data = await resp.json();
+          if (Array.isArray(data)) {
+            memorySubmissions = data;
+            hasLoadedMemory = true;
+            try {
+              fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(memorySubmissions, null, 2), 'utf-8');
+            } catch {}
+            return memorySubmissions;
+          }
         }
       }
+    } catch (blobErr) {
+      console.warn('Vercel Blob list fallback:', blobErr);
     }
-  } catch (blobErr) {
-    console.warn('Vercel Blob list fallback:', blobErr);
   }
 
   hasLoadedMemory = true;
@@ -124,14 +127,16 @@ async function persistSubmissions(submissions: any[]): Promise<void> {
     console.warn('Erro ao salvar localmente:', err);
   }
 
-  // 2. Write to Vercel Blob store
-  try {
-    await put('submissions/all.json', JSON.stringify(submissions, null, 2), {
-      access: 'public',
-      addRandomSuffix: false,
-    });
-  } catch (blobErr) {
-    console.warn('Erro ao sincronizar com Vercel Blob:', blobErr);
+  // 2. Write to Vercel Blob store if configured
+  if (process.env.BLOB_READ_WRITE_TOKEN) {
+    try {
+      await put('submissions/all.json', JSON.stringify(submissions, null, 2), {
+        access: 'public',
+        addRandomSuffix: false,
+      });
+    } catch (blobErr) {
+      console.warn('Erro ao sincronizar com Vercel Blob:', blobErr);
+    }
   }
 }
 
@@ -175,7 +180,7 @@ app.get(['/api/health', '/health'], (req: Request, res: Response) => {
     status: 'ok',
     environment: process.env.VERCEL ? 'vercel-serverless' : 'local',
     hasDatabaseUrl: Boolean(process.env.DATABASE_URL),
-    hasBlobStore: Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN),
+    hasBlobStore: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     timestamp: new Date().toISOString(),
   });
 });
@@ -185,12 +190,12 @@ app.get(['/api/config', '/config'], (req: Request, res: Response) => {
   res.json({
     cloudinaryCloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
     cloudinaryUploadPreset: process.env.CLOUDINARY_UPLOAD_PRESET || '',
-    hasBlobStore: Boolean(process.env.BLOB_STORE_ID || process.env.BLOB_READ_WRITE_TOKEN),
+    hasBlobStore: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
     uploadServiceEnabled: true,
   });
 });
 
-// Vercel Blob Client Upload Handler (Direct CDN uploads up to 50MB)
+// Vercel Blob Client Upload Handler
 app.post(['/api/upload/blob', '/upload/blob'], async (req: Request, res: Response) => {
   try {
     const jsonResponse = await handleUpload({
@@ -206,18 +211,18 @@ app.post(['/api/upload/blob', '/upload/blob'], async (req: Request, res: Respons
             'image/svg+xml',
             'image/heic',
             'image/avif',
+            'application/pdf',
           ],
           maximumSizeInBytes: 50 * 1024 * 1024, // 50MB
         };
       },
       onUploadCompleted: async ({ blob }) => {
-        console.log('Upload concluído com sucesso no Vercel Blob:', blob.url);
+        console.log('Upload concluído no Vercel Blob:', blob.url);
       },
     });
 
     res.json(jsonResponse);
   } catch (error: any) {
-    console.warn('Vercel Blob handleUpload não processado:', error.message);
     res.status(400).json({ error: error.message });
   }
 });
@@ -343,10 +348,32 @@ app.post(['/api/submissions', '/submissions'], async (req: Request, res: Respons
       try {
         savedItem = await prisma.clientSubmission.create({
           data: {
-            ...submissionPayload,
+            id: submissionPayload.id,
+            clientName: submissionPayload.clientName,
+            companyName: submissionPayload.companyName,
+            email: submissionPayload.email,
+            whatsapp: submissionPayload.whatsapp,
+            instagram: submissionPayload.instagram,
+            address: submissionPayload.address,
+            businessHours: submissionPayload.businessHours,
+            aboutMe: submissionPayload.aboutMe,
+            history: submissionPayload.history,
+            mission: submissionPayload.mission,
+            vision: submissionPayload.vision,
+            values: submissionPayload.values,
+            slogan: submissionPayload.slogan,
+            differentials: submissionPayload.differentials,
+            targetAudience: submissionPayload.targetAudience,
+            colorPalette: submissionPayload.colorPalette,
+            referenceLinks: submissionPayload.referenceLinks,
+            servicesList: submissionPayload.servicesList,
+            testimonials: submissionPayload.testimonials,
+            additionalNotes: submissionPayload.additionalNotes,
+            status: 'NOVO',
             files: formattedFiles.length > 0
               ? {
                   create: formattedFiles.map((f) => ({
+                    id: f.id,
                     fileCategory: f.fileCategory,
                     fileName: f.fileName,
                     fileUrl: f.fileUrl,
@@ -382,7 +409,7 @@ app.post(['/api/submissions', '/submissions'], async (req: Request, res: Respons
     console.error('Erro crítico no envio:', error);
     res.status(500).json({
       error: 'Erro ao salvar o formulário.',
-      details: error.message,
+      details: error?.message || 'Erro inesperado',
     });
   }
 });
@@ -390,28 +417,35 @@ app.post(['/api/submissions', '/submissions'], async (req: Request, res: Respons
 // -------------------------------------------------------------
 // 6. ADMIN ROUTES
 // -------------------------------------------------------------
+
+// Admin Login
 app.post(['/api/admin/login', '/admin/login'], (req: Request, res: Response) => {
-  const { username, password } = req.body || {};
+  try {
+    const { username, password } = req.body || {};
 
-  if (!username || !password) {
-    res.status(400).json({ error: 'Usuário e senha são obrigatórios.' });
-    return;
+    if (!username || !password) {
+      res.status(400).json({ error: 'Usuário e senha são obrigatórios.' });
+      return;
+    }
+
+    if (username !== DEFAULT_ADMIN_USER || password !== DEFAULT_ADMIN_PASSWORD) {
+      res.status(401).json({ error: 'Credenciais inválidas. Verifique usuário e senha.' });
+      return;
+    }
+
+    const token = jwt.sign({ username, role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
+
+    res.json({
+      success: true,
+      token,
+      user: { username, role: 'admin' },
+    });
+  } catch (error: any) {
+    res.status(500).json({ error: 'Erro ao processar login admin.', details: error?.message });
   }
-
-  if (username !== DEFAULT_ADMIN_USER || password !== DEFAULT_ADMIN_PASSWORD) {
-    res.status(401).json({ error: 'Credenciais inválidas.' });
-    return;
-  }
-
-  const token = jwt.sign({ username, role: 'admin' }, JWT_SECRET, { expiresIn: '7d' });
-
-  res.json({
-    success: true,
-    token,
-    user: { username, role: 'admin' },
-  });
 });
 
+// Admin Stats
 app.get(['/api/admin/stats', '/admin/stats'], verifyAuth, async (req: Request, res: Response) => {
   try {
     const prisma = getPrisma();
@@ -443,20 +477,21 @@ app.get(['/api/admin/stats', '/admin/stats'], verifyAuth, async (req: Request, r
 
     res.json({ total, novo, emAnalise, emAndamento, concluido, totalFiles });
   } catch (error: any) {
-    res.status(500).json({ error: 'Erro ao consultar estatísticas.', details: error.message });
+    res.status(500).json({ error: 'Erro ao consultar estatísticas.', details: error?.message });
   }
 });
 
+// Admin Submissions List & Search
 app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req: Request, res: Response) => {
   try {
     const { status, search, page = '1', limit = '50' } = req.query;
     const pageNum = parseInt(page as string, 10) || 1;
     const limitNum = parseInt(limit as string, 10) || 50;
+    const skip = (pageNum - 1) * limitNum;
 
     const prisma = getPrisma();
     if (prisma) {
       try {
-        const skip = (pageNum - 1) * limitNum;
         const where: any = {};
 
         if (status && status !== 'TODOS') {
@@ -486,7 +521,7 @@ app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req
         res.json({
           total,
           page: pageNum,
-          totalPages: Math.ceil(total / limitNum),
+          totalPages: Math.ceil(total / limitNum) || 1,
           data: submissions,
         });
         return;
@@ -499,6 +534,7 @@ app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req
     if (status && status !== 'TODOS') {
       all = all.filter((s) => s.status === status);
     }
+
     if (search && typeof search === 'string' && search.trim() !== '') {
       const q = search.toLowerCase();
       all = all.filter(
@@ -511,7 +547,6 @@ app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req
     }
 
     const total = all.length;
-    const skip = (pageNum - 1) * limitNum;
     const paginated = all.slice(skip, skip + limitNum);
 
     res.json({
@@ -521,14 +556,13 @@ app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req
       data: paginated,
     });
   } catch (error: any) {
-    res.status(500).json({ error: 'Erro ao buscar envios.', details: error.message });
+    res.status(500).json({ error: 'Erro ao buscar envios.', details: error?.message });
   }
 });
 
+// Admin Submission by ID
 app.get(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const id = req.params.id as string;
     const id = String(req.params.id);
 
     const prisma = getPrisma();
@@ -558,16 +592,21 @@ app.get(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, as
 
     res.json({ data: found });
   } catch (error: any) {
-    res.status(500).json({ error: 'Erro ao consultar envio.', details: error.message });
+    res.status(500).json({ error: 'Erro ao consultar envio.', details: error?.message });
   }
 });
 
+// Admin Update Status
 app.patch(['/api/admin/submissions/:id/status', '/admin/submissions/:id/status'], verifyAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const id = req.params.id as string;
     const id = String(req.params.id);
     const { status } = req.body || {};
+
+    const validStatuses = ['NOVO', 'EM_ANALISE', 'EM_ANDAMENTO', 'CONCLUIDO'];
+    if (!validStatuses.includes(status)) {
+      res.status(400).json({ error: 'Status inválido fornecido.' });
+      return;
+    }
 
     const prisma = getPrisma();
     if (prisma) {
@@ -594,14 +633,13 @@ app.patch(['/api/admin/submissions/:id/status', '/admin/submissions/:id/status']
 
     res.json({ success: true, data: item });
   } catch (error: any) {
-    res.status(500).json({ error: 'Erro ao atualizar status.', details: error.message });
+    res.status(500).json({ error: 'Erro ao atualizar status.', details: error?.message });
   }
 });
 
+// Admin Delete Submission
 app.delete(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, async (req: Request, res: Response) => {
   try {
-    const { id } = req.params;
-    const id = req.params.id as string;
     const id = String(req.params.id);
 
     const prisma = getPrisma();
@@ -627,8 +665,17 @@ app.delete(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth,
 
     res.json({ success: true, message: 'Envio excluído com sucesso.' });
   } catch (error: any) {
-    res.status(500).json({ error: 'Erro ao excluir envio.', details: error.message });
+    res.status(500).json({ error: 'Erro ao excluir envio.', details: error?.message });
   }
+});
+
+// Global Error Handler
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Erro na API:', err);
+  res.status(500).json({
+    error: 'Erro interno do servidor',
+    message: err?.message || 'Ocorreu um erro inesperado.',
+  });
 });
 
 // Local dev server listener

@@ -6,7 +6,6 @@ import {
   Copy,
   Check,
   Eye,
-  Calendar,
   Image as ImageIcon,
   Building,
   User,
@@ -286,4 +285,3 @@ export const AdminDashboardPage: React.FC = () => {
     </div>
   );
 };
-
