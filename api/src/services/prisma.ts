@@ -12,8 +12,13 @@ export function getPrisma(): PrismaClient {
     return prismaInstance;
   }
 
-  const connectionString =
-    process.env.DATABASE_URL || 'postgresql://postgres:postgres@localhost:5432/forms_clientes';
+  const connectionString = process.env.DATABASE_URL;
+
+  if (!connectionString) {
+    console.warn('⚠️ DATABASE_URL não definida nas variáveis de ambiente.');
+    prismaInstance = new PrismaClient();
+    return prismaInstance;
+  }
 
   try {
     const isCloud =
@@ -24,6 +29,7 @@ export function getPrisma(): PrismaClient {
     const pool = new pg.Pool({
       connectionString,
       ssl: isCloud ? { rejectUnauthorized: false } : undefined,
+      connectionTimeoutMillis: 5000,
     });
     const adapter = new PrismaPg(pool);
 
