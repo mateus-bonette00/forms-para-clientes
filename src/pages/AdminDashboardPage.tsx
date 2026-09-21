@@ -12,7 +12,6 @@ import {
   User,
   Phone,
   Clock,
-  Sparkles
   Sparkles,
   Trash2
 } from 'lucide-react';
@@ -87,7 +86,6 @@ export const AdminDashboardPage: React.FC = () => {
       const detailRes = await api.get(`/admin/submissions/${sub.id}`);
       setSelectedSubmission(detailRes.data?.data || sub);
       setIsModalOpen(true);
-    } catch (err) {
     } catch {
       setSelectedSubmission(sub);
       setIsModalOpen(true);
@@ -218,7 +216,6 @@ export const AdminDashboardPage: React.FC = () => {
                 className="cursor-pointer border border-slate-800/80 flex flex-col justify-between group space-y-4"
               >
                 <div>
-                  <div className="flex items-start justify-between gap-2 mb-3">
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-xs text-slate-500 flex items-center gap-1 font-mono">
                       <Clock className="w-3 h-3" />
@@ -228,7 +225,6 @@ export const AdminDashboardPage: React.FC = () => {
                         minute: '2-digit',
                       })}
                     </span>
-                    {getStatusBadge(sub.status)}
 
                     <div className="flex items-center gap-1.5">
                       {getStatusBadge(sub.status)}
