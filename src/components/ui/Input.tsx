@@ -25,20 +25,28 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
   const inputId = id || (label ? label.toLowerCase().replace(/\s+/g, '-') : undefined);
 
   return (
-    <div className="w-full space-y-1.5">
+    <div className="w-full space-y-2">
       {label && (
-        <div className="flex items-center justify-between text-xs font-medium text-slate-300">
-          <label htmlFor={inputId} className="flex items-center gap-1">
+        <div className="flex items-center justify-between text-sm font-semibold text-slate-200">
+          <label htmlFor={inputId} className="flex items-center gap-1.5 cursor-pointer">
             {label}
-            {props.required && <span className="text-rose-500">*</span>}
+            {props.required ? (
+              <span className="text-rose-400 text-xs font-bold px-1.5 py-0.2 bg-rose-500/10 rounded border border-rose-500/20">
+                Obrigatório
+              </span>
+            ) : null}
           </label>
-          {optional && <span className="text-slate-500 text-[11px] font-normal">(Opcional)</span>}
+          {optional && (
+            <span className="text-slate-400 text-xs font-medium bg-slate-800/80 px-2 py-0.5 rounded-full border border-slate-700/60">
+              Opcional
+            </span>
+          )}
         </div>
       )}
 
       <div className="relative flex items-center">
         {leftIcon && (
-          <div className="absolute left-3.5 text-slate-400 pointer-events-none flex items-center justify-center">
+          <div className="absolute left-3.5 text-teal-400 pointer-events-none flex items-center justify-center">
             {leftIcon}
           </div>
         )}
@@ -48,9 +56,9 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
           ref={ref}
           className={twMerge(
             clsx(
-              'w-full bg-slate-900/90 border border-slate-800 rounded-xl px-3.5 py-2.5 text-sm text-slate-100 placeholder-slate-500 transition-all duration-200 focus:outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 disabled:opacity-50 disabled:bg-slate-950',
-              leftIcon && 'pl-10',
-              rightIcon && 'pr-10',
+              'w-full bg-slate-900 border-2 border-slate-700/90 rounded-xl px-4 py-3 text-sm font-medium text-white placeholder-slate-400 transition-all duration-200 focus:outline-none focus:border-teal-400 focus:ring-4 focus:ring-teal-500/20 disabled:opacity-50 disabled:bg-slate-950 shadow-inner',
+              leftIcon && 'pl-11',
+              rightIcon && 'pr-11',
               error && 'border-rose-500 focus:border-rose-500 focus:ring-rose-500/20',
               className
             )
@@ -66,15 +74,14 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
       </div>
 
       {helperText && !error && (
-        <p className="text-xs text-slate-400 leading-relaxed">{helperText}</p>
+        <p className="text-xs text-slate-400 font-medium leading-relaxed pl-0.5">{helperText}</p>
       )}
 
       {error && (
-        <p className="text-xs text-rose-400 flex items-center gap-1">{error}</p>
+        <p className="text-xs text-rose-400 font-medium flex items-center gap-1 pl-0.5">{error}</p>
       )}
     </div>
   );
 });
 
 Input.displayName = 'Input';
-

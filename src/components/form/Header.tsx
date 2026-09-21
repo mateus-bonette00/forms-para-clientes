@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sparkles, CheckCircle2 } from 'lucide-react';
+import { Sparkles, CheckCircle2, FileText, Palette, Users, Briefcase, Camera, Link2 } from 'lucide-react';
 
 interface HeaderProps {
   currentStep: number;
@@ -7,6 +7,15 @@ interface HeaderProps {
   steps: { title: string; desc: string }[];
   onStepClick: (stepIndex: number) => void;
 }
+
+const STEP_ICONS = [
+  <FileText className="w-4 h-4" />,
+  <Palette className="w-4 h-4" />,
+  <Sparkles className="w-4 h-4" />,
+  <Briefcase className="w-4 h-4" />,
+  <Camera className="w-4 h-4" />,
+  <Link2 className="w-4 h-4" />,
+];
 
 export const Header: React.FC<HeaderProps> = ({
   currentStep,
@@ -20,35 +29,44 @@ export const Header: React.FC<HeaderProps> = ({
     <div className="w-full mb-8">
       {/* Brand & Intro */}
       <div className="text-center max-w-2xl mx-auto mb-8">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-teal-400 text-xs font-semibold uppercase tracking-wider mb-4">
-          <Sparkles className="w-3.5 h-3.5" />
-          Briefing & Envio de Materiais
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/40 text-teal-300 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
+          <Sparkles className="w-4 h-4 text-teal-300" />
+          Briefing & Envio de Materiais em Alta Resolução
         </div>
         <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-          Vamos Criar o Seu <span className="bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 bg-clip-text text-transparent">Site Perfeito</span>
+          Vamos Criar o Seu{' '}
+          <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent underline decoration-teal-500/30">
+            Site Profissional
+          </span>
         </h1>
-        <p className="text-slate-400 mt-3 text-sm sm:text-base leading-relaxed">
-          Preencha as informações abaixo e envie suas fotos em <strong>qualidade máxima original</strong>. 
-          Não se preocupe se não tiver tudo pronto agora: preencha o que puder!
+        <p className="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed font-normal">
+          Preencha as informações do seu projeto e envie suas fotos em <strong>qualidade máxima original</strong> (sem a compressão do WhatsApp).
         </p>
       </div>
 
-      {/* Progress Bar */}
-      <div className="glass-panel rounded-2xl p-4 sm:p-5 max-w-4xl mx-auto shadow-lg">
-        <div className="flex items-center justify-between text-xs font-medium text-slate-400 mb-3">
-          <span>Etapa {currentStep + 1} de {totalSteps}: <strong className="text-teal-400 font-semibold">{steps[currentStep].title}</strong></span>
-          <span className="text-slate-300 font-mono">{progress}% concluído</span>
+      {/* Progress Card */}
+      <div className="glass-panel rounded-2xl p-5 sm:p-6 max-w-4xl mx-auto shadow-2xl border-2 border-slate-700/60">
+        <div className="flex items-center justify-between text-sm font-semibold text-slate-200 mb-3">
+          <span className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
+            Etapa {currentStep + 1} de {totalSteps}:{' '}
+            <strong className="text-teal-300 font-bold">{steps[currentStep].title}</strong>
+          </span>
+          <span className="text-teal-300 font-mono bg-teal-950/80 px-2.5 py-1 rounded-lg border border-teal-500/30 text-xs font-bold">
+            {progress}% concluído
+          </span>
         </div>
 
-        <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden p-0.5">
+        {/* Progress bar line */}
+        <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden p-0.5 border border-slate-800">
           <div
-            className="bg-gradient-to-r from-teal-500 to-emerald-400 h-full rounded-full transition-all duration-500 ease-out shadow-sm shadow-teal-500/50"
+            className="bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 h-full rounded-full transition-all duration-500 ease-out shadow-lg shadow-teal-500/50"
             style={{ width: `${progress}%` }}
           />
         </div>
 
-        {/* Step dots navigation */}
-        <div className="grid grid-cols-6 gap-2 mt-4 pt-3 border-t border-slate-800/80">
+        {/* Step clickable items */}
+        <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-800">
           {steps.map((step, idx) => {
             const isCompleted = idx < currentStep;
             const isCurrent = idx === currentStep;
@@ -58,30 +76,30 @@ export const Header: React.FC<HeaderProps> = ({
                 key={idx}
                 type="button"
                 onClick={() => onStepClick(idx)}
-                className={`flex flex-col items-center text-center p-1.5 rounded-lg transition-all ${
+                className={`flex flex-col items-center text-center p-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
                   isCurrent
-                    ? 'bg-teal-500/15 text-teal-300 border border-teal-500/30'
+                    ? 'bg-teal-500/20 text-white border-2 border-teal-400 shadow-md shadow-teal-500/10'
                     : isCompleted
-                    ? 'text-slate-300 hover:bg-slate-800/60'
-                    : 'text-slate-500 hover:text-slate-400'
+                    ? 'bg-slate-900/60 text-slate-200 border border-slate-700 hover:border-slate-600'
+                    : 'bg-slate-950/40 text-slate-400 border border-slate-800/80 hover:text-slate-300'
                 }`}
               >
-                <div className="flex items-center justify-center w-6 h-6 rounded-full text-xs font-semibold mb-1">
+                <div className="flex items-center justify-center w-7 h-7 rounded-full text-xs font-bold mb-1.5">
                   {isCompleted ? (
-                    <CheckCircle2 className="w-4 h-4 text-teal-400" />
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400" />
                   ) : (
                     <span
-                      className={`w-5 h-5 rounded-full flex items-center justify-center text-[11px] ${
+                      className={`w-6 h-6 rounded-full flex items-center justify-center text-xs ${
                         isCurrent
-                          ? 'bg-teal-500 text-slate-950 font-bold'
-                          : 'bg-slate-800 text-slate-400'
+                          ? 'bg-teal-400 text-slate-950 font-extrabold shadow-sm'
+                          : 'bg-slate-800 text-slate-300 font-semibold'
                       }`}
                     >
                       {idx + 1}
                     </span>
                   )}
                 </div>
-                <span className="hidden sm:inline text-[11px] font-medium truncate max-w-full">
+                <span className="text-xs font-semibold truncate max-w-full">
                   {step.title}
                 </span>
               </button>
@@ -92,4 +110,3 @@ export const Header: React.FC<HeaderProps> = ({
     </div>
   );
 };
-
