@@ -528,6 +528,8 @@ app.get(['/api/admin/submissions', '/admin/submissions'], verifyAuth, async (req
 app.get(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
 
     const prisma = getPrisma();
     if (prisma) {
@@ -563,6 +565,8 @@ app.get(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, as
 app.patch(['/api/admin/submissions/:id/status', '/admin/submissions/:id/status'], verifyAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
     const { status } = req.body || {};
 
     const prisma = getPrisma();
@@ -597,6 +601,8 @@ app.patch(['/api/admin/submissions/:id/status', '/admin/submissions/:id/status']
 app.delete(['/api/admin/submissions/:id', '/admin/submissions/:id'], verifyAuth, async (req: Request, res: Response) => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
 
     const prisma = getPrisma();
     if (prisma) {

@@ -13,6 +13,8 @@ import {
   Phone,
   Clock,
   Sparkles
+  Sparkles,
+  Trash2
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { AdminHeader } from '../components/admin/AdminHeader';
@@ -86,8 +88,24 @@ export const AdminDashboardPage: React.FC = () => {
       setSelectedSubmission(detailRes.data?.data || sub);
       setIsModalOpen(true);
     } catch (err) {
+    } catch {
       setSelectedSubmission(sub);
       setIsModalOpen(true);
+    }
+  };
+
+  const handleDeleteSubmission = async (e: React.MouseEvent, sub: ClientSubmission) => {
+    e.stopPropagation();
+
+    if (window.confirm(`Tem certeza que deseja excluir permanentemente o briefing de "${sub.clientName}" e todas as informações enviadas?`)) {
+      try {
+        await api.delete(`/admin/submissions/${sub.id}`);
+        toast.success(`Briefing de "${sub.clientName}" excluído com sucesso!`);
+        fetchDashboardData();
+      } catch (err: any) {
+        console.error('Erro ao excluir envio:', err);
+        toast.error('Não foi possível excluir o envio.');
+      }
     }
   };
 
@@ -201,6 +219,7 @@ export const AdminDashboardPage: React.FC = () => {
               >
                 <div>
                   <div className="flex items-start justify-between gap-2 mb-3">
+                  <div className="flex items-center justify-between gap-2 mb-3">
                     <span className="text-xs text-slate-500 flex items-center gap-1 font-mono">
                       <Clock className="w-3 h-3" />
                       {new Date(sub.createdAt).toLocaleDateString('pt-BR')} às{' '}
@@ -210,6 +229,18 @@ export const AdminDashboardPage: React.FC = () => {
                       })}
                     </span>
                     {getStatusBadge(sub.status)}
+
+                    <div className="flex items-center gap-1.5">
+                      {getStatusBadge(sub.status)}
+                      <button
+                        type="button"
+                        title="Excluir briefing permanentemente"
+                        onClick={(e) => handleDeleteSubmission(e, sub)}
+                        className="p-1.5 rounded-lg text-slate-400 hover:text-rose-400 hover:bg-rose-500/20 border border-slate-800 hover:border-rose-500/30 transition-all cursor-pointer"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
                   </div>
 
                   <h3 className="text-base font-bold text-white group-hover:text-teal-400 transition-colors flex items-center gap-2 truncate">

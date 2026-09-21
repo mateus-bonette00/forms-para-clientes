@@ -104,6 +104,8 @@ export const getSubmissions = async (req: Request, res: Response): Promise<void>
 export const getSubmissionById = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
 
     const submission = await prisma.clientSubmission.findUnique({
       where: { id },
@@ -127,6 +129,8 @@ export const getSubmissionById = async (req: Request, res: Response): Promise<vo
 export const updateSubmissionStatus = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
     const { status } = req.body;
 
     const validStatuses = ['NOVO', 'EM_ANALISE', 'EM_ANDAMENTO', 'CONCLUIDO'];
@@ -150,6 +154,8 @@ export const updateSubmissionStatus = async (req: Request, res: Response): Promi
 export const deleteSubmission = async (req: Request, res: Response): Promise<void> => {
   try {
     const { id } = req.params;
+    const id = req.params.id as string;
+    const id = String(req.params.id);
 
     await prisma.clientSubmission.delete({
       where: { id },
