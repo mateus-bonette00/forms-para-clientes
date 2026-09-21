@@ -10,29 +10,29 @@ dotenv.config();
 const app = express();
 
 // Configure middlewares
-app.use(cors({
-  origin: '*',
-  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(
+  cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  })
+);
 
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Healthcheck
-app.get('/api/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
+// Healthcheck (handles both /health and /api/health)
+app.get(['/health', '/api/health'], (req, res) => {
+  res.json({
+    status: 'ok',
+    environment: process.env.VERCEL ? 'vercel-serverless' : 'local',
+    timestamp: new Date().toISOString(),
+  });
 });
 
-// Register routes
-app.use('/api', clientRoutes);
-app.use('/api/admin', adminRoutes);
-app.use('/api/upload', uploadRoutes);
-
-// 404 handler for API
-app.use('/api/*', (req, res) => {
-  res.status(404).json({ error: 'Rota de API não encontrada.' });
-});
+// Register routes with dual path matching
+app.use(['/', '/api'], clientRoutes);
+app.use(['/admin', '/api/admin'], adminRoutes);
+app.use(['/upload', '/api/upload'], uploadRoutes);
 
 export default app;
-
