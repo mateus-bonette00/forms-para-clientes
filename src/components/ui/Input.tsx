@@ -31,7 +31,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(({
           <label htmlFor={inputId} className="flex items-center gap-1.5 cursor-pointer">
             {label}
             {props.required ? (
-              <span className="text-rose-400 text-xs font-bold px-1.5 py-0.2 bg-rose-500/10 rounded border border-rose-500/20">
+              <span className="text-rose-400 text-xs font-bold px-1.5 py-0.5 bg-rose-500/10 rounded border border-rose-500/20">
                 Obrigatório
               </span>
             ) : null}

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { ChevronLeft, ChevronRight, Lock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Lock, ShieldCheck, Heart } from 'lucide-react';
 import { Header } from '../components/form/Header';
 import { Step1Contact } from '../components/form/Step1Contact';
 import { Step2Branding } from '../components/form/Step2Branding';
@@ -108,7 +108,7 @@ export const ClientFormPage: React.FC = () => {
       const response = await api.post('/submissions', formData);
       if (response.data?.success) {
         setIsSubmitted(true);
-        toast.success('Formulário e materiais enviados com sucesso!');
+        toast.success('Formulário e fotos enviados com sucesso para Mateus Bonette!');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else {
         toast.error('Ocorreu um erro ao enviar o formulário.');
@@ -147,7 +147,7 @@ export const ClientFormPage: React.FC = () => {
           }}
         />
 
-        <Card className="max-w-4xl mx-auto border border-slate-800/80 shadow-2xl">
+        <Card className="max-w-4xl mx-auto border-2 border-slate-700/80 shadow-2xl">
           {currentStep === 0 && (
             <Step1Contact
               data={formData}
@@ -182,7 +182,7 @@ export const ClientFormPage: React.FC = () => {
           )}
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-8 mt-8 border-t border-slate-800/80">
+          <div className="flex items-center justify-between pt-8 mt-8 border-t border-slate-800">
             <Button
               type="button"
               variant="secondary"
@@ -194,7 +194,7 @@ export const ClientFormPage: React.FC = () => {
               Voltar
             </Button>
 
-            <span className="text-xs text-slate-500 hidden sm:inline">
+            <span className="text-xs text-slate-400 font-semibold hidden sm:inline">
               Etapa {currentStep + 1} de {STEPS.length}
             </span>
 
@@ -213,17 +213,24 @@ export const ClientFormPage: React.FC = () => {
         </Card>
       </div>
 
-      {/* Footer & Admin shortcut */}
-      <footer className="mt-12 text-center py-4 border-t border-slate-900 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 gap-2 max-w-4xl mx-auto w-full">
-        <span>© {new Date().getFullYear()} Plataforma de Coleta & Briefing • Alta Resolução</span>
-        <a
-          href="#/admin/login"
-          className="hover:text-slate-400 flex items-center gap-1.5 transition-colors"
-        >
-          <Lock className="w-3.5 h-3.5" /> Área do Desenvolvedor
-        </a>
+      {/* Footer with Mateus branding */}
+      <footer className="mt-12 text-center py-6 border-t border-slate-800 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-3 max-w-4xl mx-auto w-full">
+        <div className="flex items-center gap-2">
+          <img src="/logo-branca-mateus.png" alt="Mateus Bonette" className="h-5 w-auto object-contain opacity-80" />
+          <span>© {new Date().getFullYear()} • Plataforma Segura de Briefing</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span className="text-slate-500 flex items-center gap-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-teal-400" /> Seus dados estão seguros
+          </span>
+          <a
+            href="#/admin/login"
+            className="hover:text-teal-400 flex items-center gap-1.5 transition-colors font-medium"
+          >
+            <Lock className="w-3.5 h-3.5" /> Área do Desenvolvedor
+          </a>
+        </div>
       </footer>
     </div>
   );
 };
-

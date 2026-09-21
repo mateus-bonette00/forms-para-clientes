@@ -1,5 +1,17 @@
 import React from 'react';
-import { Sparkles, CheckCircle2, FileText, Palette, Users, Briefcase, Camera, Link2 } from 'lucide-react';
+import {
+  Sparkles,
+  CheckCircle2,
+  FileText,
+  Palette,
+  Briefcase,
+  Camera,
+  Link2,
+  ShieldCheck,
+  Lock,
+  UserCheck,
+  Check
+} from 'lucide-react';
 
 interface HeaderProps {
   currentStep: number;
@@ -7,15 +19,6 @@ interface HeaderProps {
   steps: { title: string; desc: string }[];
   onStepClick: (stepIndex: number) => void;
 }
-
-const STEP_ICONS = [
-  <FileText className="w-4 h-4" />,
-  <Palette className="w-4 h-4" />,
-  <Sparkles className="w-4 h-4" />,
-  <Briefcase className="w-4 h-4" />,
-  <Camera className="w-4 h-4" />,
-  <Link2 className="w-4 h-4" />,
-];
 
 export const Header: React.FC<HeaderProps> = ({
   currentStep,
@@ -27,37 +30,81 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <div className="w-full mb-8">
-      {/* Brand & Intro */}
-      <div className="text-center max-w-2xl mx-auto mb-8">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-teal-500/15 border border-teal-400/40 text-teal-300 text-xs font-bold uppercase tracking-wider mb-4 shadow-sm">
-          <Sparkles className="w-4 h-4 text-teal-300" />
-          Briefing & Envio de Materiais em Alta Resolução
+      {/* Developer Branding & Trust Header */}
+      <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-6">
+        {/* Logo Mateus */}
+        <div className="mb-5 hover:scale-105 transition-transform duration-300">
+          <img
+            src="/logo-branca-mateus.png"
+            alt="Mateus Bonette"
+            className="h-10 sm:h-12 w-auto object-contain drop-shadow-md"
+          />
         </div>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight">
-          Vamos Criar o Seu{' '}
-          <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent underline decoration-teal-500/30">
-            Site Profissional
+
+        {/* Profile Badge & Trust Greeting */}
+        <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-slate-900/90 border-2 border-slate-700/80 shadow-xl mb-4">
+          <div className="relative">
+            <img
+              src="/profile-2.jpg"
+              alt="Mateus Bonette"
+              className="w-11 h-11 rounded-full object-cover border-2 border-teal-400 shadow-md ring-2 ring-teal-500/20"
+            />
+            <span className="absolute bottom-0 right-0 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-slate-950" title="Online" />
+          </div>
+          <div className="text-left">
+            <div className="flex items-center gap-1.5">
+              <h3 className="text-sm font-bold text-white leading-tight">Mateus Bonette</h3>
+              <Check className="w-3.5 h-3.5 text-teal-400 stroke-[3]" />
+            </div>
+            <p className="text-xs text-slate-300 font-medium">Desenvolvedor & Criador do seu Projeto</p>
+          </div>
+        </div>
+
+        {/* Title */}
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mt-1">
+          Briefing & Envio de Fotos{' '}
+          <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent underline decoration-teal-500/40">
+            em Alta Resolução
           </span>
         </h1>
-        <p className="text-slate-300 mt-3 text-sm sm:text-base leading-relaxed font-normal">
-          Preencha as informações do seu projeto e envie suas fotos em <strong>qualidade máxima original</strong> (sem a compressão do WhatsApp).
+
+        <p className="text-slate-300 mt-2.5 text-sm sm:text-base leading-relaxed max-w-xl">
+          Envie os textos e as fotos da sua empresa diretamente para mim. Todos os arquivos são mantidos em <strong>qualidade máxima original</strong> (sem compressão do WhatsApp).
         </p>
+
+        {/* Security & Confidentiality Trust Highlights */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full mt-5">
+          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-teal-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-teal-200">
+            <Lock className="w-4 h-4 text-teal-400 shrink-0" />
+            <span>Ambiente 100% Seguro</span>
+          </div>
+
+          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-emerald-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-emerald-200">
+            <UserCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span>Acesso Exclusivo de Mateus</span>
+          </div>
+
+          <div className="p-2.5 rounded-xl bg-slate-900/80 border border-cyan-500/30 flex items-center justify-center gap-2 text-xs font-semibold text-cyan-200">
+            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span>Fotos sem Perda de Qualidade</span>
+          </div>
+        </div>
       </div>
 
       {/* Progress Card */}
-      <div className="glass-panel rounded-2xl p-5 sm:p-6 max-w-4xl mx-auto shadow-2xl border-2 border-slate-700/60">
+      <div className="glass-panel rounded-2xl p-5 sm:p-6 max-w-4xl mx-auto shadow-2xl border-2 border-slate-700/80">
         <div className="flex items-center justify-between text-sm font-semibold text-slate-200 mb-3">
           <span className="flex items-center gap-2">
             <span className="w-2.5 h-2.5 rounded-full bg-teal-400 animate-ping" />
             Etapa {currentStep + 1} de {totalSteps}:{' '}
             <strong className="text-teal-300 font-bold">{steps[currentStep].title}</strong>
           </span>
-          <span className="text-teal-300 font-mono bg-teal-950/80 px-2.5 py-1 rounded-lg border border-teal-500/30 text-xs font-bold">
+          <span className="text-teal-300 font-mono bg-teal-950/90 px-3 py-1 rounded-lg border border-teal-500/40 text-xs font-bold shadow-sm">
             {progress}% concluído
           </span>
         </div>
 
-        {/* Progress bar line */}
+        {/* Progress line */}
         <div className="w-full bg-slate-950 h-3 rounded-full overflow-hidden p-0.5 border border-slate-800">
           <div
             className="bg-gradient-to-r from-teal-400 via-emerald-400 to-cyan-400 h-full rounded-full transition-all duration-500 ease-out shadow-lg shadow-teal-500/50"
@@ -65,7 +112,7 @@ export const Header: React.FC<HeaderProps> = ({
           />
         </div>
 
-        {/* Step clickable items */}
+        {/* Step dots */}
         <div className="grid grid-cols-3 sm:grid-cols-6 gap-2 sm:gap-3 mt-5 pt-4 border-t border-slate-800">
           {steps.map((step, idx) => {
             const isCompleted = idx < currentStep;
