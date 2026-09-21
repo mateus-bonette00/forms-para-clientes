@@ -185,33 +185,41 @@ export const ClientFormPage: React.FC = () => {
           )}
 
           {/* Navigation Controls */}
-          <div className="flex items-center justify-between pt-8 mt-8 border-t border-slate-800">
-            <Button
-              type="button"
-              variant="secondary"
-              size="md"
-              onClick={handlePrev}
-              disabled={currentStep === 0 || isSubmitting}
-              leftIcon={<ChevronLeft className="w-4 h-4" />}
-            >
-              Voltar
-            </Button>
-
-            <span className="text-xs text-slate-400 font-semibold hidden sm:inline">
-              Etapa {currentStep + 1} de {STEPS.length}
-            </span>
-
-            {currentStep < STEPS.length - 1 ? (
+          <div className="pt-8 mt-8 border-t border-slate-800 space-y-3">
+            <div className="flex items-center justify-between">
               <Button
                 type="button"
-                variant="primary"
+                variant="secondary"
                 size="md"
-                onClick={handleNext}
-                rightIcon={<ChevronRight className="w-4 h-4" />}
+                onClick={handlePrev}
+                disabled={currentStep === 0 || isSubmitting}
+                leftIcon={<ChevronLeft className="w-4 h-4" />}
               >
-                Avançar
+                Voltar
               </Button>
-            ) : null}
+
+              <span className="text-xs text-slate-400 font-semibold hidden sm:inline">
+                Etapa {currentStep + 1} de {STEPS.length}
+              </span>
+
+              {currentStep < STEPS.length - 1 ? (
+                <Button
+                  type="button"
+                  variant="primary"
+                  size="md"
+                  onClick={handleNext}
+                  rightIcon={<ChevronRight className="w-4 h-4" />}
+                >
+                  Avançar
+                </Button>
+              ) : null}
+            </div>
+
+            {currentStep < STEPS.length - 1 && (
+              <p className="text-center text-xs text-slate-400">
+                💡 <span className="text-slate-300">Não tem essas informações agora?</span> Pode clicar em <strong className="text-teal-300">Avançar</strong> e pular sem problemas!
+              </p>
+            )}
           </div>
         </Card>
       </div>

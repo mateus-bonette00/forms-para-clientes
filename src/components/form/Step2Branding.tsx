@@ -14,6 +14,8 @@ import { Input } from '../ui/Input';
 import { ClientFormData, UploadedFileItem } from '../../types';
 import { uploadFile } from '../../services/upload';
 
+import { StepNotice } from './StepNotice';
+
 interface Step2Props {
   data: ClientFormData;
   onChange: (field: keyof ClientFormData, value: any) => void;
@@ -117,6 +119,8 @@ export const Step2Branding: React.FC<Step2Props> = ({ data, onChange }) => {
           Informe se você já possui logotipo e cores para o seu site, ou se prefere que o Mateus defina tudo para você.
         </p>
       </div>
+
+      <StepNotice message="Se você não tiver logo ou cores agora, não tem problema nenhum! Pode marcar 'Ainda não tenho' ou 'O Mateus define', ou simplesmente pular para a próxima etapa." />
 
       {/* ------------------------------------------------------------- */}
       {/* PERGUNTA 1: Você tem uma logo? */}

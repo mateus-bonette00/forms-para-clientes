@@ -1,7 +1,8 @@
 import React from 'react';
-import { Link2, MessageSquareQuote, HelpCircle, Send, CheckSquare, Sparkles } from 'lucide-react';
+import { Link2, Sparkles, Send } from 'lucide-react';
 import { Textarea } from '../ui/Textarea';
 import { Button } from '../ui/Button';
+import { StepNotice } from './StepNotice';
 import { ClientFormData } from '../../types';
 
 interface Step6Props {
@@ -19,60 +20,63 @@ export const Step6References: React.FC<Step6Props> = ({
 }) => {
   return (
     <div className="space-y-6">
-      <div className="border-b border-slate-800 pb-4">
+      <div className="border-b border-slate-700/80 pb-4">
         <h2 className="text-xl font-bold text-white flex items-center gap-2">
           <Link2 className="w-5 h-5 text-teal-400" />
-          6. Referências, Depoimentos & Observações Finais
+          6. Referências & Envio Final
         </h2>
-        <p className="text-sm text-slate-400 mt-1">
-          Última etapa! Compartilhe sites de inspiração ou qualquer detalhe extra para o seu projeto.
+        <p className="text-sm text-slate-300 mt-1">
+          Última etapa! Se você viu algum site na internet que achou bonito, pode mandar o link aqui.
         </p>
       </div>
+
+      <StepNotice message="Não conhece nenhum site de exemplo ou não tem depoimentos agora? Não precisa preencher nada aqui! Pode ir direto para o botão verde abaixo para finalizar e me enviar o que você preencheu." />
 
       <div className="space-y-5">
         {/* Sites de Referência */}
         <Textarea
-          label="Sites de Inspiração ou Concorrentes (Links)"
+          label="Sites que você gosta ou achou bonito (Opcional)"
           rows={3}
-          placeholder="Ex: https://exemplo.com.br (Gosto do estilo moderno e das cores deste site)"
+          placeholder="Ex: www.exemplo.com.br (Gosto do estilo moderno e limpo deste site)"
           optional
           value={data.referenceLinks}
           onChange={(e) => onChange('referenceLinks', e.target.value)}
-          helperText="Cole links de sites que você acha bonitos, mesmo de outros ramos de atividade."
+          helperText="Cole aqui links ou nomes de sites que você achou legais na internet."
         />
 
         {/* Depoimentos de Clientes */}
         <Textarea
-          label="Depoimentos ou Avaliações de Clientes (Google, WhatsApp, etc.)"
+          label="Tem depoimentos ou avaliações de clientes? (Opcional)"
           rows={4}
-          placeholder={`Ex:\n"Excelente atendimento e rapidez na entrega!" - João Pereira\n"O melhor serviço da região, recomendo a todos." - Maria Souza`}
+          placeholder={`Ex:\n"Atendimento nota 10, recomendo!" - Maria\n"O melhor serviço da cidade." - Pedro`}
           optional
           value={data.testimonials}
           onChange={(e) => onChange('testimonials', e.target.value)}
-          helperText="Depoimentos reais ajudam a gerar confiança e conversões no seu site."
+          helperText="Mensagens que você recebeu no WhatsApp ou elogios no Google."
         />
 
         {/* Observações Extras */}
         <Textarea
-          label="Alguma observação, pedido especial ou detalhe que não foi citado?"
+          label="Quer me falar mais alguma coisa sobre seu projeto? (Opcional)"
           rows={3}
-          placeholder="Ex: Gostaria de ter um botão flutuante do WhatsApp em todas as páginas..."
+          placeholder="Ex: Quero um botão bem grande do WhatsApp, quero destacar meu endereço..."
           optional
           value={data.additionalNotes}
           onChange={(e) => onChange('additionalNotes', e.target.value)}
+          helperText="Qualquer recado ou preferência sua para o Mateus."
         />
       </div>
 
       {/* Recap & Submit Box */}
-      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-teal-950/30 border border-teal-500/20 space-y-4">
+      <div className="p-6 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-900 to-teal-950/40 border-2 border-teal-500/30 space-y-4 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
-            <Sparkles className="w-5 h-5" />
+          <div className="w-11 h-11 rounded-xl bg-teal-500/20 border border-teal-500/30 flex items-center justify-center text-teal-300">
+            <Sparkles className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-sm font-semibold text-white">Tudo pronto para enviar?</h3>
-            <p className="text-xs text-slate-400">
-              Seus textos e fotos em alta resolução serão encaminhados com segurança para nossa equipe.
+            <h3 className="text-base font-bold text-white">Tudo pronto para enviar?</h3>
+            <p className="text-xs sm:text-sm text-slate-300">
+              Eu (Mateus) vou receber suas informações e fotos para começar o planejamento do seu site!
             </p>
           </div>
         </div>
@@ -82,16 +86,15 @@ export const Step6References: React.FC<Step6Props> = ({
             type="button"
             variant="primary"
             size="lg"
-            className="w-full text-base"
+            className="w-full text-base py-4 font-bold"
             onClick={onSubmit}
             isLoading={isSubmitting}
             leftIcon={<Send className="w-5 h-5" />}
           >
-            {isSubmitting ? 'Enviando Briefing e Fotos...' : 'Finalizar e Enviar Material Completo'}
+            {isSubmitting ? 'Enviando informações para o Mateus...' : 'Finalizar e Enviar para o Mateus'}
           </Button>
         </div>
       </div>
     </div>
   );
 };
-

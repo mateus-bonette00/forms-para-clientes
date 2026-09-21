@@ -3,8 +3,9 @@ import {
   CheckCircle2,
   Lock,
   UserCheck,
-  ShieldCheck,
-  Check
+  Check,
+  Sparkles,
+  Camera
 } from 'lucide-react';
 
 interface HeaderProps {
@@ -26,8 +27,8 @@ export const Header: React.FC<HeaderProps> = ({
     <div className="w-full mb-8">
       {/* Developer Branding & Trust Header */}
       <div className="flex flex-col items-center text-center max-w-3xl mx-auto mb-6">
-        {/* Logo Mateus (Tamanho Aumentado) */}
-        <div className="mb-6 hover:scale-105 transition-transform duration-300 flex items-center justify-center">
+        {/* Logo Mateus */}
+        <div className="mb-5 hover:scale-105 transition-transform duration-300 flex items-center justify-center">
           <img
             src="/logo-branca-mateus.png"
             alt="Mateus Bonette"
@@ -36,7 +37,7 @@ export const Header: React.FC<HeaderProps> = ({
         </div>
 
         {/* Profile Badge & Trust Greeting */}
-        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-2xl bg-slate-900/95 border-2 border-slate-700 shadow-2xl mb-5">
+        <div className="inline-flex items-center gap-3.5 px-4 py-2.5 rounded-2xl bg-slate-900/95 border-2 border-slate-700 shadow-2xl mb-4">
           <div className="relative">
             <img
               src="/profile-2.jpg"
@@ -56,18 +57,31 @@ export const Header: React.FC<HeaderProps> = ({
 
         {/* Title */}
         <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight leading-tight mt-1">
-          Briefing & Envio de Fotos{' '}
+          Coleta de Informações & Fotos{' '}
           <span className="bg-gradient-to-r from-teal-300 via-emerald-300 to-cyan-300 bg-clip-text text-transparent underline decoration-teal-500/40">
-            em Alta Resolução
+            para o Seu Site
           </span>
         </h1>
 
-        <p className="text-slate-300 mt-2.5 text-sm sm:text-base leading-relaxed max-w-xl">
-          Envie os textos e as fotos da sua empresa diretamente para mim. Todos os arquivos são mantidos em <strong>qualidade máxima original</strong> (sem compressão do WhatsApp).
-        </p>
+        {/* Super Friendly Reassurance Banner for Laypeople */}
+        <div className="mt-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-teal-950/70 via-slate-900/90 to-teal-950/70 border-2 border-teal-500/40 shadow-xl text-left max-w-2xl w-full">
+          <div className="flex items-start gap-3">
+            <div className="p-2 rounded-xl bg-teal-500/20 text-teal-300 shrink-0 mt-0.5">
+              <Sparkles className="w-5 h-5" />
+            </div>
+            <div className="space-y-1">
+              <h4 className="text-sm font-bold text-white flex items-center gap-2">
+                Fique super tranquilo(a): você NÃO precisa ter tudo pronto!
+              </h4>
+              <p className="text-xs sm:text-sm text-teal-100 leading-relaxed">
+                <strong>Só preencha o que você já tiver em mãos.</strong> O que você não tiver ou não souber agora, pode deixar em branco e pular. Qualquer detalhe que você me mandar já me ajuda muito a adiantar o seu site!
+              </p>
+            </div>
+          </div>
+        </div>
 
         {/* Security & Confidentiality Trust Highlights */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full mt-5">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 w-full mt-4">
           <div className="p-3 rounded-xl bg-slate-900/90 border border-teal-500/40 flex items-center justify-center gap-2 text-xs font-semibold text-teal-200 shadow-sm">
             <Lock className="w-4 h-4 text-teal-400 shrink-0" />
             <span>Ambiente 100% Seguro</span>
@@ -79,8 +93,8 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           <div className="p-3 rounded-xl bg-slate-900/90 border border-cyan-500/40 flex items-center justify-center gap-2 text-xs font-semibold text-cyan-200 shadow-sm">
-            <ShieldCheck className="w-4 h-4 text-cyan-400 shrink-0" />
-            <span>Fotos em Qualidade Máxima</span>
+            <Camera className="w-4 h-4 text-cyan-400 shrink-0" />
+            <span>Quanto mais fotos, melhor!</span>
           </div>
         </div>
       </div>
