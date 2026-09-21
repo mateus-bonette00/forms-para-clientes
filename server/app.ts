@@ -9,7 +9,6 @@ dotenv.config();
 
 const app = express();
 
-// Configure middlewares
 app.use(
   cors({
     origin: '*',
@@ -21,8 +20,8 @@ app.use(
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
-// Healthcheck (handles both /health and /api/health)
-app.get(['/health', '/api/health'], (req: Request, res: Response) => {
+// Healthcheck
+app.get(['/api/health', '/health'], (req: Request, res: Response) => {
   res.json({
     status: 'ok',
     environment: process.env.VERCEL ? 'vercel-serverless' : 'local',
@@ -32,13 +31,13 @@ app.get(['/health', '/api/health'], (req: Request, res: Response) => {
 });
 
 // Register routes
-app.use(['/', '/api'], clientRoutes);
-app.use(['/admin', '/api/admin'], adminRoutes);
-app.use(['/upload', '/api/upload'], uploadRoutes);
+app.use(['/api', '/'], clientRoutes);
+app.use(['/api/admin', '/admin'], adminRoutes);
+app.use(['/api/upload', '/upload'], uploadRoutes);
 
 // Global Error Handler
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error('Erro não tratado na API:', err);
+  console.error('Erro na API:', err);
   res.status(500).json({
     error: 'Erro interno do servidor',
     message: err?.message || 'Ocorreu um erro inesperado.',
