@@ -6,18 +6,16 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 let prismaInstance: PrismaClient | null = null;
+let prismaDisabled = false;
 
-export function getPrisma(): PrismaClient {
-  if (prismaInstance) {
-    return prismaInstance;
-  }
+export function getPrisma(): PrismaClient | null {
+  if (prismaDisabled) return null;
+  if (prismaInstance) return prismaInstance;
 
   const connectionString = process.env.DATABASE_URL;
 
-  if (!connectionString) {
-    console.warn('⚠️ DATABASE_URL não definida nas variáveis de ambiente.');
-    prismaInstance = new PrismaClient();
-    return prismaInstance;
+  if (!connectionString || connectionString.trim() === '') {
+    return null;
   }
 
   try {
@@ -29,7 +27,7 @@ export function getPrisma(): PrismaClient {
     const pool = new pg.Pool({
       connectionString,
       ssl: isCloud ? { rejectUnauthorized: false } : undefined,
-      connectionTimeoutMillis: 5000,
+      connectionTimeoutMillis: 4000,
     });
     const adapter = new PrismaPg(pool);
 
@@ -40,15 +38,18 @@ export function getPrisma(): PrismaClient {
 
     return prismaInstance;
   } catch (error) {
-    console.error('Falha ao conectar no PostgreSQL via Prisma:', error);
-    prismaInstance = new PrismaClient();
-    return prismaInstance;
+    console.warn('Falha ao conectar no PostgreSQL via Prisma:', error);
+    prismaDisabled = true;
+    return null;
   }
 }
 
 export const prisma = new Proxy({} as PrismaClient, {
   get(target, prop, receiver) {
     const client = getPrisma();
+    if (!client) {
+      throw new Error('PostgreSQL / Prisma não está conectado.');
+    }
     return Reflect.get(client, prop, receiver);
   },
 });

@@ -47,7 +47,7 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
         const uploadedUrl = await uploadFile(file);
 
         newItems.push({
-          fileCategory: 'OUTRO', // Default to "O Mateus escolhe o melhor lugar"
+          fileCategory: 'OUTRO',
           fileName: file.name,
           fileUrl: uploadedUrl,
           fileSize: file.size,
@@ -118,7 +118,7 @@ export const Step5Photos: React.FC<Step5Props> = ({ data, onChange }) => {
       </div>
 
       {/* Step Notice */}
-      <StepNotice message="Não tem fotos agora? Fique 100% tranquilo(a)! Se você não tiver fotos, pode avançar sem nenhuma que o Mateus utiliza fotos profissionais de alta qualidade para o seu ramo. Mas se você tiver fotos reais no celular, envie quantas quiser!" />
+      <StepNotice message="Não tem fotos agora? Fique 100% tranquilo(a)! Se você não tiver fotos, pode avançar sem nenhuma que o Mateus utiliza fotos profissionais de alta qualidade para o seu nicho. Mas se você tiver fotos reais no celular, envie quantas quiser!" />
 
       {/* Dica de Encorajamento */}
       <div className="p-4 rounded-2xl bg-slate-900/80 border-2 border-slate-700 flex items-start gap-3.5 text-xs sm:text-sm text-slate-200 shadow-sm">

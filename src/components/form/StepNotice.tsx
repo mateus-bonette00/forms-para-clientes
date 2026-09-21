@@ -19,3 +19,4 @@ export const StepNotice: React.FC<StepNoticeProps> = ({
     </div>
   );
 };
+
